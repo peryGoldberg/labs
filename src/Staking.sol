@@ -8,16 +8,16 @@ contract Staking{
  uint public totalSupply;
  //address=> time=>amount the user depisited
  mapping(address=>mapping(uint=>uint)) public deposit;
+ mapping(address=>uint) public numOfDeposit;
+
   constructor() {
         owner = msg.sender;
+       
         stakingToken = IERC20(0x127fea9Dd797E70B2BF3AdBDda7a9F324332b01f);
         totalSupply=1000000;
         stakingToken.transfer(address(this),totalSupply);
     }
-//   modifier onlyOwner() {
-//         require(msg.sender == owner, "not authorized");
-//         _;
-//     }
+ 
   modifier reward(address user){
        require(user!=address(0),"Address does not make sense");
        _;
@@ -27,41 +27,67 @@ contract Staking{
         require(amount>0,"The amount must be greater than 0");
         deposit[msg.sender][block.timestamp]=amount;
         stakingToken.transfer(address(this), amount);
+        numOfDeposit[msg.sender]+=1;
+  }
+
+  function withdraw(uint amount)  external reward(msg.sender){
+    require(amount>0,"The amount must be greater than 0");
+
+    for (uint i = 0; i < numOfDeposit[msg.sender]&&amount!=0; i++) {
+       uint time = deposit[msg.sender][i];
+        // Check if the timestamp is valid (not 0) and if it's been more than a week
+        require(block.timestamp > time + 1 weeks,"Time has not passed");
+    
+            uint depositedAmount = deposit[msg.sender][time];
+            if (amount <= depositedAmount) {
+                deposit[msg.sender][time] -= amount;
+               amount=0;
+            } else {
+                deposit[msg.sender][time] = 0;
+                amount -= depositedAmount;
+            }
+        
+        
+    }
+    require(amount==0,"you cant withdraw this amount");
+    uint balanceSupply=stakingToken.balanceOf(address(this))-totalSupply;
+    uint percentage = (amount * 100) /  balanceSupply;
+    stakingToken.transferFrom(address(this),msg.sender,(totalSupply * percentage)/100);
+    
   }
 //A function that allows you to withdraw the money and rewards
   
- function withdraw(uint amount) external reward(msg.sender){
-    require(amount > 0, "The amount must be greater than 0");
-    require(block.timestamp > deposit[msg.sender][block.timestamp] + 1 weeks, "Hasn't been a week since deposit");
+//  function withdraw(uint amount) external reward(msg.sender){
+//     require(amount > 0, "The amount must be greater than 0");
+//     require(block.timestamp > deposit[msg.sender][block.timestamp] + 1 weeks, "Hasn't been a week since deposit");
+//     uint totalWithdrawn;
+//     uint balanceSupply = stakingToken.balanceOf(address(this)) - totalSupply;
 
-    uint totalWithdrawn;
-    uint balanceSupply = stakingToken.balanceOf(address(this)) - totalSupply;
+//     // Loop over all timestamps in deposit[msg.sender]
+//     for (uint i = 0; i < deposit[msg.sender].length; i++) {
+//         uint timestamp = deposit[msg.sender][i];
 
-    // Loop over all timestamps in deposit[msg.sender]
-    for (uint i = 0; i < deposit[msg.sender].length; i++) {
-        uint timestamp = deposit[msg.sender][i];
+//         // Check if the timestamp is valid (not 0) and if it's been more than a week
+//         if (timestamp != 0 && block.timestamp > timestamp + 1 weeks) {
+//             uint depositedAmount = deposit[msg.sender][timestamp];
+//             if (amount <= depositedAmount) {
+//                 deposit[msg.sender][timestamp] -= amount;
+//                 totalWithdrawn += amount;
+//                 break; // Exit the loop if the full amount has been withdrawn
+//             } else {
+//                 deposit[msg.sender][timestamp] = 0;
+//                 totalWithdrawn += depositedAmount;
+//                 amount -= depositedAmount;
+//             }
+//         }
+//     }
 
-        // Check if the timestamp is valid (not 0) and if it's been more than a week
-        if (timestamp != 0 && block.timestamp > timestamp + 1 weeks) {
-            uint depositedAmount = deposit[msg.sender][timestamp];
-            if (amount <= depositedAmount) {
-                deposit[msg.sender][timestamp] -= amount;
-                totalWithdrawn += amount;
-                break; // Exit the loop if the full amount has been withdrawn
-            } else {
-                deposit[msg.sender][timestamp] = 0;
-                totalWithdrawn += depositedAmount;
-                amount -= depositedAmount;
-            }
-        }
-    }
+//     require(totalWithdrawn > 0, "No valid deposits found");
+//     uint rewardAmount = (totalSupply * totalWithdrawn * 100) / (balanceSupply * 100);
+//     uint totalAmount = totalWithdrawn + rewardAmount;
 
-    require(totalWithdrawn > 0, "No valid deposits found");
-    uint rewardAmount = (totalSupply * totalWithdrawn * 100) / (balanceSupply * 100);
-    uint totalAmount = totalWithdrawn + rewardAmount;
-
-    stakingToken.transfer(msg.sender, totalAmount);
-}
+//     stakingToken.transfer(msg.sender, totalAmount);
+// }
 
 //see the situation
   function getBalance() external view returns(uint){
@@ -160,4 +186,4 @@ contract Staking{
 //     uint totalAmount = totalWithdrawn + rewardAmount;
 
 //     stakingToken.transfer(msg.sender, totalAmount);
-// }
+//  }

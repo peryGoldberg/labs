@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // https://medium.com/@marketing.blockchain/how-to-create-a-multisig-wallet-in-solidity-cfb759dbdb35
 pragma solidity ^0.8.20;
-import "../../new-project/src/ERC20.sol";
-import "../../new-project/src/ERC721.sol";
+import "../../newProject/src/ERC20.sol";
+import "../../newProject/src/ERC721.sol";
 contract Auction {
    bool public flagFinish;
     address public owner;

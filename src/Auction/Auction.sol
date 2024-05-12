@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // https://medium.com/@marketing.blockchain/how-to-create-a-multisig-wallet-in-solidity-cfb759dbdb35
 pragma solidity ^0.8.20;
+import "forge-std/console.sol";
 import "../../newProject/src/ERC20.sol";
 import "../../newProject/src/ERC721.sol";
 contract Auction {
@@ -9,16 +10,16 @@ contract Auction {
      MyToken public immutable myToken;
      NFTtoken public immutable nft;
      uint public finishTime;
-     mapping(address=>uint) bidders;
+     mapping(address=>uint) public bidders;
      address [] public addresses;
-     address winner;
+     address public winner;
   constructor(uint sum,address token,address n){
     myToken = MyToken(token);
-     nft=NFTtoken(n);
-       owner=msg.sender;
-     nft.mint(owner,5);
+    nft = NFTtoken(n);
+    owner = msg.sender;
+    nft.mint(owner,5);
     bidders[msg.sender]=sum;
-    winner=msg.sender;
+    winner = msg.sender;
     finishTime=block.timestamp + 7 days;
     flagFinish=false;
   }
@@ -27,10 +28,10 @@ contract Auction {
   function Proposal(uint amount) external{  
     require(amount>bidders[winner],"not enough money");
     if(block.timestamp<finishTime){
-         bidders[msg.sender]=amount;
-         addresses.push(msg.sender);
-    myToken.transferFrom(msg.sender,address(this),amount);
-    winner=msg.sender;
+        bidders[msg.sender]=amount;
+        addresses.push(msg.sender);
+        myToken.transferFrom(msg.sender,address(this),amount);
+        winner=msg.sender;
     }
     else if(!flagFinish){
        flagFinish=true;
@@ -42,7 +43,7 @@ contract Auction {
   function cancelation() external{
     require(winner!=msg.sender,"the winner cant cancel");
      if(block.timestamp<finishTime){
-         myToken.transferFrom(msg.sender,address(this),bidders[msg.sender]);
+         myToken.transfer(msg.sender,bidders[msg.sender]);
          bidders[msg.sender]=0;
     }
     else if(!flagFinish){
@@ -51,17 +52,14 @@ contract Auction {
     } 
   }
 
-  function finish() public{
-    if(winner==owner){
-         myToken.transferFrom(address(this),owner,bidders[owner]);
-    }
-    else{
+  function finish() internal{
+    require(winner!=owner,"you cant");
+   
     for(uint i=0;i<addresses.length;i++){
         if(bidders[addresses[i]]>0&&addresses[i]!=winner)
-            myToken.transferFrom(address(this),addresses[i],bidders[addresses[i]]);
+            myToken.transfer(addresses[i],bidders[addresses[i]]);
     }
     nft.transferFrom(owner,winner,5);
-    }
 
 
   }
@@ -69,6 +67,8 @@ contract Auction {
   function getCurrentWinner() external view returns(uint){
     return bidders[winner];
   }
+
+   
  
 
 }

@@ -1,13 +1,13 @@
-// SPDX-License-Identifier: MIT
+// // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "forge-std/Test.sol";
-import "forge-std/console.sol";
-import "./Share.sol";
-contract testShare is Test {
-    Distribute public sh;
-    function setUp() public {
-        sh = new Distribute();
-    }
+// import "forge-std/Test.sol";
+// import "forge-std/console.sol";
+// import "./Share.sol";
+// contract testShare is Test {
+//     Distribute public sh;
+//     function setUp() public {
+//         sh = new Distribute();
+//     }
     // function testReceive() public {
     //     address randAddress = vm.addr(1111);
     //     vm.startPrank(randAddress);
@@ -28,4 +28,4 @@ contract testShare is Test {
     //   assertEq(s,1,"it need be 1");
     //   assertEq(user,1,"error!!!");
     // }
-}
+// }

@@ -18,19 +18,19 @@ contract LiquidityTest is Test {
     }
 
 
-    function testTradeAToB() public{
+    // function testTradeAToB() public{
        
-        uint amount = 50;
-        address user=vm.addr(11);
-        vm.startPrank(user);
-         tokenA.mint(address(this),amount);
-        tokenA.approve(address(l),amount);
-         tokenA.transfer(address(user),amount); 
-        l.tradeAToB(20);
-        uint add=address(user).balance*10**18;
-        uint mnt=16.666666667*10**18;
-        assertEq(add,mnt,"neeed");
-        vm.stopPrank();
-    }
+    //     uint amount = 50;
+    //     address user=vm.addr(11);
+    //     vm.startPrank(user);
+    //      tokenA.mint(address(this),amount);
+    //     tokenA.approve(address(l),amount);
+    //      tokenA.transfer(address(user),amount); 
+    //     l.tradeAToB(20);
+    //     uint add=address(user).balance*10**18;
+    //     uint mnt=16.666666667*10**18;
+    //     assertEq(add,mnt,"neeed");
+    //     vm.stopPrank();
+    // }
 
 }

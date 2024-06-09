@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
-import "./Share.sol";
+import "@hack/share/Share.sol";
 contract testShare is Test {
-    Distribute public sh;
+    Share public sh;
     function setUp() public {
-        sh = new Distribute();
+        sh = new Share();
     }
     function testReceive() public {
         address randAddress = vm.addr(1111);

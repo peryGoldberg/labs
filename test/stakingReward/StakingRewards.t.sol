@@ -4,7 +4,7 @@
 
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
-import "@hack/stakingRewards/StakingRewards.sol";
+import "@hack/stakingReward/StakingRewards.sol";
 import "../../new-project/src/ERC20.sol";
 pragma solidity ^0.8.20;
 contract StakingRewardsTest is Test {

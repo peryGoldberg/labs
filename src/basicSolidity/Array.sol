@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 contract array{
 uint[] public arr;
@@ -31,7 +31,7 @@ function getLen() public view returns(uint){
 }
 
 function example() public{
-    uint[] public memory=new uint[](5);
+    uint[]  memory arr=new uint[](5);
 }
 
 function remove(uint index) public{
@@ -42,7 +42,7 @@ function remove(uint index) public{
   arr.pop();
 }
 
-function delete(uint[] arr) public{
+function deleted(uint[] arr) public{
     remove(2);
     assert(arr[0]==1);
     assert(arr[1]==2);

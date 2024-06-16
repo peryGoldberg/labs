@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 
 contract toDo{
 struct todo{
-    string public text;
-    bool complete;
+    string  text;
+    bool  complete;
 }
 
 todo[] public Todo;
@@ -21,7 +21,7 @@ Todo.push(t);
 }
 
 function get(uint _index) public view returns(string text, bool complete){
-   todo public storage t= Todo[_index];
+   todo  storage t= Todo[_index];
    return(t.text,t.complete);
 }
 

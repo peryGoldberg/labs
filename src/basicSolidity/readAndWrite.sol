@@ -12,7 +12,7 @@ contract simple{
    function set(address addr,uint256 i) public {
       balance[addr]=i;
    }
-   function delete(address addr) public{
+   function deleted(address addr) public{
       delete balance[addr];
    }
 
